@@ -1,0 +1,23 @@
+{
+  "configurations": [
+    {
+      "name": "Win64",
+      "compilerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "msvc-x64",
+      "includePath": ["D:\\Program Files\\Epic Games\\UE_5.1"],
+      "compileCommands": "D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_CryptRaider.json"
+    },
+    {
+      "name": "Win32",
+      "compilerPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\Hostx86\\x86\\cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "msvc-x86",
+      "includePath": ["D:\\Program Files\\Epic Games\\UE_5.1"],
+      "compileCommands": "D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default.json"
+    }
+  ],
+  "version": 4
+}

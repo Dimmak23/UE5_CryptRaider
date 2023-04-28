@@ -1,0 +1,48 @@
+{
+  "workbench.colorCustomizations": {
+    "scrollbarSlider.background": "#8b8442bb",
+    "minimapSlider.background": "#7da6d66b",
+    "scrollbarSlider.hoverBackground": "#46a3a779",
+    "minimapSlider.hoverBackground": "#60066377",
+    "scrollbarSlider.activeBackground": "#456999ee",
+    "minimapSlider.activeBackground": "#d3071142"
+  },
+
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": false,
+  "editor.tabSize": 4,
+
+  "files.exclude": {
+    ".vscode": false,
+    ".vscode/compileCommands_Default": true,
+    ".vscode/compileCommands_ObstacleAssault": true,
+    ".vscode/compl": true,
+    "Backup": true,
+    "Content": true,
+    "DerivedDataCache": true,
+    "Saved": true,
+    "Config": true,
+    "Intermediate": true,
+    "Binaries": true,
+    "D:\\Program Files\\Epic Games\\UE_5.1": true
+  },
+
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true,
+    ".vscode": false,
+    ".vscode/compileCommands_Default": true,
+    ".vscode/compileCommands_ObstacleAssault": true,
+    ".vscode/compl": true,
+    "Backup": true,
+    "Content": true,
+    "DerivedDataCache": true,
+    "Saved": true,
+    "Config": true,
+    "Intermediate": true,
+    "Binaries": true,
+    "D:\\Program Files\\Epic Games\\UE_5.1": true
+  }
+}
