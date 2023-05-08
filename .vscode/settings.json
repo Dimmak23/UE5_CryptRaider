@@ -1,12 +1,7 @@
 {
-  "workbench.colorCustomizations": {
-    "scrollbarSlider.background": "#8b8442bb",
-    "minimapSlider.background": "#7da6d66b",
-    "scrollbarSlider.hoverBackground": "#46a3a779",
-    "minimapSlider.hoverBackground": "#60066377",
-    "scrollbarSlider.activeBackground": "#456999ee",
-    "minimapSlider.activeBackground": "#d3071142"
-  },
+  "workbench.editor.restoreViewState": true,
+  // "editor.colorDecorators": true,
+  // "editor.colorDecoratorsLimit": 500,
 
   "editor.formatOnSave": true,
   "editor.insertSpaces": false,
@@ -15,7 +10,7 @@
   "files.exclude": {
     ".vscode": false,
     ".vscode/compileCommands_Default": true,
-    ".vscode/compileCommands_ObstacleAssault": true,
+    ".vscode/compileCommands_CryptRaider": true,
     ".vscode/compl": true,
     "Backup": true,
     "Content": true,
@@ -34,7 +29,7 @@
     "**/.hg/store/**": true,
     ".vscode": false,
     ".vscode/compileCommands_Default": true,
-    ".vscode/compileCommands_ObstacleAssault": true,
+    ".vscode/compileCommands_CryptRaider": true,
     ".vscode/compl": true,
     "Backup": true,
     "Content": true,

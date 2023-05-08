@@ -4,7 +4,7 @@ BasedOnStyle: Google
 Language: Cpp
 
 AccessModifierOffset: -4
-ConstructorInitializerIndentWidth: 8
+ConstructorInitializerIndentWidth: 4
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -71,9 +71,8 @@ BraceWrapping: {
 AllowShortFunctionsOnASingleLine: All
 
 # Specify whether access modifiers should have their own indentation level
-IndentAccessModifiers: true
+IndentAccessModifiers: false
 
 # The indentation used for namespaces
 # All (in configuration: All) Indent in all namespaces.
 NamespaceIndentation: All
-...
