@@ -24,6 +24,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 							   FActorComponentTickFunction* ThisTickFunction) override;
 
+	// encapsulate InitMove
+	UFUNCTION(BlueprintCallable, Category = Door)
+	void SetInitMove(const bool& value);
+	UFUNCTION(BlueprintCallable, Category = Door)
+	bool GetInitMove() const;
+
 private:
 	UPROPERTY(EditAnywhere)
 	FVector MoveOffset;
