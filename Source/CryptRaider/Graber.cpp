@@ -21,17 +21,9 @@ void UGraber::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	// if (PhysicsHandle != nullptr)
-	// {
-	// 	UE_LOG(LogTemp, Display, TEXT("Found physics hangler: %s..."), *(PhysicsHandle->GetName()));
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("No physics hangler were found!"));
-	// }
 	if (MaxGrabDistance == 0.0f) MaxGrabDistance = 400.0f;
 	if (GrabRadius == 0.0f) GrabRadius = 20.f;
-	if (HoldDistance == 0.0f) HoldDistance = 50.0f;
+	if (HoldDistance == 0.0f) HoldDistance = 200.0f;
 
 	PhysicsHandle = GetPhysicsHandle();
 }
@@ -45,7 +37,7 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	if (PhysicsHandle == nullptr) return;
 
 	FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
-	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, ObjectRotation);
 }
 
 void UGraber::GrabStuff()
@@ -54,14 +46,6 @@ void UGraber::GrabStuff()
 
 	StartPosition = GetComponentLocation();									// current position of the player
 	DestPosition = StartPosition + GetForwardVector() * MaxGrabDistance;	// destiantion vector from player
-
-	// UE_LOG(LogTemp, Display, TEXT("Grabber Rotation: %s"), *(GetComponentRotation().ToCompactString()));
-	// UE_LOG(LogTemp, Display, TEXT("Current Time Is: %f"), GetWorld()->TimeSeconds);
-	// DrawDebugLine(this->GetWorld(), StartPosition, DestPosition, FColor::Red);
-	// DrawDebugSphere(								   //
-	// 	this->GetWorld(), DestPosition, GrabRadius,	   //
-	// 	10, FColor::Red, false, 5					   //
-	// );												   // End point of our grabbing stick
 
 	HitSphere = FCollisionShape::MakeSphere(GrabRadius);
 
@@ -81,6 +65,7 @@ void UGraber::GrabStuff()
 
 	if (HasHit)
 	{
+		ObjectRotation = HitResult.GetComponent()->GetComponentRotation();
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
 			HitResult.GetComponent(),						   //
@@ -88,30 +73,6 @@ void UGraber::GrabStuff()
 			HitResult.ImpactPoint,							   //
 			GetComponentRotation()							   //
 		);
-
-		// // Where is the component?
-		// DrawDebugSphere(this->GetWorld(),														 //
-		// 				HitResult.Component.Get()->GetRelativeLocation() + FVector(0, 0, 50),	 //
-		// 				50, 20, FColor::Green, false, 5											 //
-		// );	  // Desirable gravable object
-		// // Location in a world space where the moving shape would end up against the impacted
-		// // object, if there is a hit
-		// DrawDebugSphere(this->GetWorld(),					//
-		// 				HitResult.Location,					//
-		// 				20, 10, FColor::Purple, false, 5	//
-		// );
-		// // Where we hit him?
-		// DrawDebugSphere(this->GetWorld(),					//
-		// 				HitResult.ImpactPoint,				//
-		// 				10, 10, FColor::Yellow, false, 5	//
-		// );													// Center of the sphere is the hit point
-
-		// UE_LOG(														 //
-		// 	LogTemp, Display,										 //
-		// 	TEXT("Current Time is: %f, hiting the actor: %s..."),	 //
-		// 	GetWorld()->TimeSeconds,								 // get time
-		// 	*(HitResult.GetActor()->GetActorNameOrLabel())			 // get name
-		// );
 	}
 	else
 	{
@@ -134,7 +95,7 @@ UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Display, TEXT("Actually found a physics handler: %s..."), *(PhysicsHandle->GetName()));
+		UE_LOG(LogTemp, Display, TEXT("Actually found a physics handler: %s..."), *(Result->GetName()));
 	}
 	Result->RegisterComponent();
 

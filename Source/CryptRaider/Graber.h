@@ -55,5 +55,8 @@ private:
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle;
 
+	// target
+	FRotator ObjectRotation;
+
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 };
