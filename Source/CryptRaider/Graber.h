@@ -34,6 +34,8 @@ public:
 	void ReleaseStuff();
 
 private:
+	UPhysicsHandleComponent* GetPhysicsHandle() const;
+
 	// utilities
 	FVector StartPosition;
 	FVector DestPosition;
@@ -56,7 +58,6 @@ private:
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	// target
+	UPrimitiveComponent* GrabingTarget{ nullptr };
 	FRotator ObjectRotation;
-
-	UPhysicsHandleComponent* GetPhysicsHandle() const;
 };

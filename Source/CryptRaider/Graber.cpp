@@ -36,8 +36,11 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	// ...
 	if (PhysicsHandle == nullptr) return;
 
-	FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
-	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, ObjectRotation);
+	if (GrabingTarget != nullptr)
+	{
+		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+	}
 }
 
 void UGraber::GrabStuff()
@@ -65,17 +68,25 @@ void UGraber::GrabStuff()
 
 	if (HasHit)
 	{
-		ObjectRotation = HitResult.GetComponent()->GetComponentRotation();
+		GrabingTarget = HitResult.GetComponent();
+		// GrabingTarget = PhysicsHandle->GetGrabbedComponent();
+		GrabingTarget->WakeAllRigidBodies();
+		ObjectRotation = GrabingTarget->GetComponentRotation();
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
-			HitResult.GetComponent(),						   //
+			GrabingTarget,									   //
 			NAME_None,										   //
 			HitResult.ImpactPoint,							   //
 			GetComponentRotation()							   //
 		);
+		UE_LOG(LogTemp, Display,									   //
+			   TEXT("Current Time is: %f, grabber took object..."),	   //
+			   GetWorld()->TimeSeconds								   //
+		);
 	}
 	else
 	{
+		GrabingTarget = nullptr;
 		UE_LOG(											//
 			LogTemp, Display,							//
 			TEXT("Current Time is: %f, no hitting"),	//
@@ -84,7 +95,18 @@ void UGraber::GrabStuff()
 	}
 }
 
-void UGraber::ReleaseStuff() { UE_LOG(LogTemp, Display, TEXT("Grabber have released object...")); }
+void UGraber::ReleaseStuff()
+{
+	if (PhysicsHandle == nullptr) return;
+
+	GrabingTarget = PhysicsHandle->GetGrabbedComponent();
+	if (GrabingTarget != nullptr)
+	{
+		GrabingTarget->WakeAllRigidBodies();
+		PhysicsHandle->ReleaseComponent();
+		UE_LOG(LogTemp, Display, TEXT("Grabber released object..."));
+	}
+}
 
 UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 {
@@ -97,7 +119,7 @@ UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 	{
 		UE_LOG(LogTemp, Display, TEXT("Actually found a physics handler: %s..."), *(Result->GetName()));
 	}
-	Result->RegisterComponent();
+	// Result->RegisterComponent();
 
 	return Result;
 }
