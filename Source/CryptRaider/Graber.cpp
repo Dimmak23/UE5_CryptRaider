@@ -21,9 +21,6 @@ void UGraber::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	if (MaxGrabDistance == 0.0f) MaxGrabDistance = 400.0f;
-	if (GrabRadius == 0.0f) GrabRadius = 20.f;
-	if (HoldDistance == 0.0f) HoldDistance = 250.0f;
 
 	PhysicsHandle = GetPhysicsHandle();
 }
@@ -42,22 +39,26 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	if (GrabingTarget != nullptr)
 	{
 		// GrabingTarget->WakeAllRigidBodies(); // strange behavior
-		FVector OwnerLocation = GetComponentLocation();
-		FVector CurrentTargetLocation = GrabingTarget->GetRelativeLocation();
-		FVector NewTargetLocation = OwnerLocation + GetForwardVector() * HoldDistance;
+		FVector _OwnerLocation = GetComponentLocation();
+		FVector _CurrentTargetLocation = GrabingTarget->GetRelativeLocation();
+		FVector _NewTargetLocation = _OwnerLocation + GetForwardVector() * HoldDistance;
 
-		if (FVector::Dist(OwnerLocation, CurrentTargetLocation) < FVector::Dist(OwnerLocation, NewTargetLocation))
-			NewTargetLocation =
-				OwnerLocation + GetForwardVector() * FVector::Dist(OwnerLocation, CurrentTargetLocation);
+		float _DistanceToTarget = FVector::Dist(_OwnerLocation, _CurrentTargetLocation);
+
+		if (_DistanceToTarget < FVector::Dist(_OwnerLocation, _NewTargetLocation))
+		{
+			UE_LOG(LogTemp, Display,												  //
+				   TEXT("Current Time is: %f, object to close to the grabber..."),	  //
+				   GetWorld()->TimeSeconds											  //
+			);
+			_NewTargetLocation = _OwnerLocation + GetForwardVector() * _DistanceToTarget;
+		}
 
 		PhysicsHandle->SetTargetLocationAndRotation(	//
-			NewTargetLocation,							//
+			_NewTargetLocation,							//
 			GetComponentRotation()						// use owner rotation
 		);
 	}
-	// UE_LOG(LogTemp, Display,															   //
-	// 	   TEXT("weGotSomething: %s."), (weGotSomething ? TEXT("true") : TEXT("false"))	   //
-	// );
 }
 
 void UGraber::TriggerGrab()
@@ -76,19 +77,28 @@ void UGraber::TriggerGrab()
 
 void UGraber::GrabStuff()
 {
-	StartPosition = GetComponentLocation();									// current position of the player
-	DestPosition = StartPosition + GetForwardVector() * MaxGrabDistance;	// destination vector from player
+	// current position of the player
+	FVector _StartPosition = GetComponentLocation();
 
-	HitSphere = FCollisionShape::MakeSphere(GrabRadius);
+	// destination vector from player
+	FVector _DestPosition = _StartPosition + GetForwardVector() * MaxGrabDistance;
 
-	HasHit = this->GetWorld()->SweepSingleByChannel(	//
-		HitResult,										//
-		StartPosition,									//
-		DestPosition,									//
-		FQuat::Identity,								//
-		ECC_GameTraceChannel2,							//
-		HitSphere										//
+	// result of the searching for grabing
+	FHitResult _HitResult;
+
+	// everything that collide this sphere we can grab
+	FCollisionShape _HitSphere = FCollisionShape::MakeSphere(GrabRadius);
+
+	// can we grab (on such distance, with such collision sphere)?
+	bool _HasHit = this->GetWorld()->SweepSingleByChannel(	  //
+		_HitResult,											  //
+		_StartPosition,										  //
+		_DestPosition,										  //
+		FQuat::Identity,									  //
+		ECC_GameTraceChannel2,								  //
+		_HitSphere											  //
 	);
+
 	// FQuat::Identity --> no rotation
 	// ECollisionChannel TraceChannel --> {project_folder}/Config/DefaultEngine.ini -->
 	// Channel = ECC_GameTraceChannel2,
@@ -96,22 +106,19 @@ void UGraber::GrabStuff()
 	// +DefaultChannelResponses=(Channel=ECC_GameTraceChannel2, DefaultResponse=ECR_Ignore, bTraceType=True,
 	// bStaticObject=False, Name="GraberChannel")
 
-	if (HasHit && GrabingTarget == nullptr)	   // if no target is grabbed already then - go!
+	if (_HasHit && GrabingTarget == nullptr)	// if no target is grabbed already then - go!
 	{
 		// Prepare target
-		GrabingTarget = HitResult.GetComponent();	 // it's better to receive grabbed object here
-		// CurrentTargetLocation = HitResult.Component.Get()->GetRelativeLocation();	 // save object location
-		// GrabingTarget->WakeAllRigidBodies();		 // strange behavior
-		// ObjectRotation = GrabingTarget->GetComponentRotation();	   // don't use
+		GrabingTarget = _HitResult.GetComponent();	  // it's better to receive grabbed object here
 
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
 															   //! CAN'T USE PhysicsHandle->GetGrabbedComponent()
 															   //! HERE, WE DIDN'T GRABBED ANYTHING YET
-			HitResult.GetComponent(),
-			NAME_None,				  //
-			HitResult.ImpactPoint,	  //
-			GetComponentRotation()	  // use owner rotation
+			_HitResult.GetComponent(),						   //
+			NAME_None,										   //
+			_HitResult.ImpactPoint,							   //
+			GetComponentRotation()							   // use owner rotation
 		);
 
 		//!
@@ -125,7 +132,7 @@ void UGraber::GrabStuff()
 	}
 
 	// Now you know that you miss the target
-	if (!HasHit)
+	if (!_HasHit)
 	{
 		UE_LOG(												 //
 			LogTemp, Display,								 //
@@ -142,8 +149,6 @@ void UGraber::ReleaseStuff()
 	//! are not the same
 	if (GrabingTarget != nullptr)
 	{
-		// PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
-		// GrabingTarget->WakeAllRigidBodies();	// strange behavior
 		PhysicsHandle->ReleaseComponent();
 		UE_LOG(LogTemp, Display, TEXT("Grabber released object..."));
 		GrabingTarget = nullptr;	// finally invalidating pointer and no longer accessing target
@@ -156,16 +161,15 @@ void UGraber::ReleaseStuff()
 
 UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 {
-	UPhysicsHandleComponent* Result = this->GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (Result == nullptr)
+	UPhysicsHandleComponent* _Result = this->GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (_Result == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Grabber requires a UPhysicsHandleComponent."));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Display, TEXT("Recompiled 10:26 PM, found a physics handler: %s..."), *(Result->GetName()));
+		UE_LOG(LogTemp, Display, TEXT("Recompiled 11:09 PM, found a physics handler: %s..."), *(_Result->GetName()));
 	}
-	// Result->RegisterComponent(); // no need in this
 
-	return Result;
+	return _Result;
 }

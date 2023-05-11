@@ -37,14 +37,8 @@ public:
 	void ReleaseStuff();
 
 private:
+	// physics
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
-
-	// utilities
-	FVector StartPosition;	  // where the grabber now?
-	FVector DestPosition;	  // how far the stick can get?
-
-	// do we grab something already?
-	bool weGotSomething{ false };
 
 	// our virtual stick, that we use for grabing
 	UPROPERTY(EditAnywhere)
@@ -52,23 +46,16 @@ private:
 	// on the end ot the stick we have a sphere with such radius
 	UPROPERTY(EditAnywhere)
 	float GrabRadius{};
-	// everything that collide this sphere we can grab
-	FCollisionShape HitSphere;
-
 	// but we hold object closer to us
 	UPROPERTY(EditAnywhere)
 	float HoldDistance{};
 
-	// result of the searching for grabing
-	FHitResult HitResult;
-	// can we grab (on such distance, with such collision sphere)?
-	bool HasHit{ false };
-
 	// physics
-	UPhysicsHandleComponent* PhysicsHandle;
+	UPhysicsHandleComponent* PhysicsHandle{ nullptr };
 
 	// target
 	UPrimitiveComponent* GrabingTarget{ nullptr };
-	// FVector CurrentTargetLocation;
-	FRotator ObjectRotation;
+
+	// do we grab something already?
+	bool weGotSomething{ false };
 };
