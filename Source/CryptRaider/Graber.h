@@ -28,6 +28,9 @@ public:
 							   FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
+	void TriggerGrab();
+
+	UFUNCTION(BlueprintCallable)
 	void GrabStuff();
 
 	UFUNCTION(BlueprintCallable)
@@ -37,27 +40,35 @@ private:
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 
 	// utilities
-	FVector StartPosition;
-	FVector DestPosition;
+	FVector StartPosition;	  // where the grabber now?
+	FVector DestPosition;	  // how far the stick can get?
+
+	// do we grab something already?
+	bool weGotSomething{ false };
 
 	// our virtual stick, that we use for grabing
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance{};
-
+	// on the end ot the stick we have a sphere with such radius
 	UPROPERTY(EditAnywhere)
 	float GrabRadius{};
+	// everything that collide this sphere we can grab
+	FCollisionShape HitSphere;
 
 	// but we hold object closer to us
 	UPROPERTY(EditAnywhere)
 	float HoldDistance{};
 
-	FCollisionShape HitSphere;
+	// result of the searching for grabing
 	FHitResult HitResult;
+	// can we grab (on such distance, with such collision sphere)?
 	bool HasHit{ false };
+
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle;
 
 	// target
 	UPrimitiveComponent* GrabingTarget{ nullptr };
+	// FVector CurrentTargetLocation;
 	FRotator ObjectRotation;
 };

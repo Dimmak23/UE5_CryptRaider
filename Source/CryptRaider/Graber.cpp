@@ -23,7 +23,7 @@ void UGraber::BeginPlay()
 	// ...
 	if (MaxGrabDistance == 0.0f) MaxGrabDistance = 400.0f;
 	if (GrabRadius == 0.0f) GrabRadius = 20.f;
-	if (HoldDistance == 0.0f) HoldDistance = 200.0f;
+	if (HoldDistance == 0.0f) HoldDistance = 250.0f;
 
 	PhysicsHandle = GetPhysicsHandle();
 }
@@ -36,19 +36,48 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	// ...
 	if (PhysicsHandle == nullptr) return;
 
+	//! NOTE: actual grabbed component: PhysicsHandle->GetGrabbedComponent()
+	//! and what is on the target: GrabingTarget = HitResult.GetComponent()
+	//! are not the same
 	if (GrabingTarget != nullptr)
 	{
-		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
-		PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+		// GrabingTarget->WakeAllRigidBodies(); // strange behavior
+		FVector OwnerLocation = GetComponentLocation();
+		FVector CurrentTargetLocation = GrabingTarget->GetRelativeLocation();
+		FVector NewTargetLocation = OwnerLocation + GetForwardVector() * HoldDistance;
+
+		if (FVector::Dist(OwnerLocation, CurrentTargetLocation) < FVector::Dist(OwnerLocation, NewTargetLocation))
+			NewTargetLocation =
+				OwnerLocation + GetForwardVector() * FVector::Dist(OwnerLocation, CurrentTargetLocation);
+
+		PhysicsHandle->SetTargetLocationAndRotation(	//
+			NewTargetLocation,							//
+			GetComponentRotation()						// use owner rotation
+		);
+	}
+	// UE_LOG(LogTemp, Display,															   //
+	// 	   TEXT("weGotSomething: %s."), (weGotSomething ? TEXT("true") : TEXT("false"))	   //
+	// );
+}
+
+void UGraber::TriggerGrab()
+{
+	if (PhysicsHandle == nullptr) return;
+
+	if (weGotSomething)
+	{
+		this->ReleaseStuff();
+	}
+	else
+	{
+		this->GrabStuff();
 	}
 }
 
 void UGraber::GrabStuff()
 {
-	if (PhysicsHandle == nullptr) return;
-
 	StartPosition = GetComponentLocation();									// current position of the player
-	DestPosition = StartPosition + GetForwardVector() * MaxGrabDistance;	// destiantion vector from player
+	DestPosition = StartPosition + GetForwardVector() * MaxGrabDistance;	// destination vector from player
 
 	HitSphere = FCollisionShape::MakeSphere(GrabRadius);
 
@@ -61,50 +90,67 @@ void UGraber::GrabStuff()
 		HitSphere										//
 	);
 	// FQuat::Identity --> no rotation
-	// ECollisionChannel TraceChannel --> {project_folder}/Config/DefaultEngine.ini --> Channel=ECC_GameTraceChannel2,
+	// ECollisionChannel TraceChannel --> {project_folder}/Config/DefaultEngine.ini -->
+	// Channel = ECC_GameTraceChannel2,
 	// for: Name="GraberChannel"
 	// +DefaultChannelResponses=(Channel=ECC_GameTraceChannel2, DefaultResponse=ECR_Ignore, bTraceType=True,
 	// bStaticObject=False, Name="GraberChannel")
 
-	if (HasHit)
+	if (HasHit && GrabingTarget == nullptr)	   // if no target is grabbed already then - go!
 	{
-		GrabingTarget = HitResult.GetComponent();
-		// GrabingTarget = PhysicsHandle->GetGrabbedComponent();
-		GrabingTarget->WakeAllRigidBodies();
-		ObjectRotation = GrabingTarget->GetComponentRotation();
+		// Prepare target
+		GrabingTarget = HitResult.GetComponent();	 // it's better to receive grabbed object here
+		// CurrentTargetLocation = HitResult.Component.Get()->GetRelativeLocation();	 // save object location
+		// GrabingTarget->WakeAllRigidBodies();		 // strange behavior
+		// ObjectRotation = GrabingTarget->GetComponentRotation();	   // don't use
+
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
-			GrabingTarget,									   //
-			NAME_None,										   //
-			HitResult.ImpactPoint,							   //
-			GetComponentRotation()							   //
+															   //! CAN'T USE PhysicsHandle->GetGrabbedComponent()
+															   //! HERE, WE DIDN'T GRABBED ANYTHING YET
+			HitResult.GetComponent(),
+			NAME_None,				  //
+			HitResult.ImpactPoint,	  //
+			GetComponentRotation()	  // use owner rotation
 		);
+
+		//!
+		weGotSomething = true;
+		//!
+
 		UE_LOG(LogTemp, Display,									   //
 			   TEXT("Current Time is: %f, grabber took object..."),	   //
 			   GetWorld()->TimeSeconds								   //
 		);
 	}
-	else
+
+	// Now you know that you miss the target
+	if (!HasHit)
 	{
-		GrabingTarget = nullptr;
-		UE_LOG(											//
-			LogTemp, Display,							//
-			TEXT("Current Time is: %f, no hitting"),	//
-			GetWorld()->TimeSeconds						// get time
+		UE_LOG(												 //
+			LogTemp, Display,								 //
+			TEXT("Current Time is: %f, you miss object"),	 //
+			GetWorld()->TimeSeconds							 //
 		);
 	}
 }
 
 void UGraber::ReleaseStuff()
 {
-	if (PhysicsHandle == nullptr) return;
-
-	GrabingTarget = PhysicsHandle->GetGrabbedComponent();
+	//! NOTE: actual grabbed component: PhysicsHandle->GetGrabbedComponent()
+	//! and what is on the target: GrabingTarget = HitResult.GetComponent()
+	//! are not the same
 	if (GrabingTarget != nullptr)
 	{
-		GrabingTarget->WakeAllRigidBodies();
+		// PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+		// GrabingTarget->WakeAllRigidBodies();	// strange behavior
 		PhysicsHandle->ReleaseComponent();
 		UE_LOG(LogTemp, Display, TEXT("Grabber released object..."));
+		GrabingTarget = nullptr;	// finally invalidating pointer and no longer accessing target
+
+		//!
+		weGotSomething = false;
+		//!
 	}
 }
 
@@ -117,9 +163,9 @@ UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Display, TEXT("Actually found a physics handler: %s..."), *(Result->GetName()));
+		UE_LOG(LogTemp, Display, TEXT("Recompiled 10:26 PM, found a physics handler: %s..."), *(Result->GetName()));
 	}
-	// Result->RegisterComponent();
+	// Result->RegisterComponent(); // no need in this
 
 	return Result;
 }
