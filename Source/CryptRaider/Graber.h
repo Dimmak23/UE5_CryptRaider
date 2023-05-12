@@ -40,6 +40,12 @@ private:
 	// physics
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
 
+	// hit utility
+	bool CheckHitResult(FHitResult& __HitResult__) const;
+
+	// new target location clamping
+	FVector GetClampedNewTargetLocation() const;
+
 	// our virtual stick, that we use for grabing
 	UPROPERTY(EditAnywhere)
 	float MaxGrabDistance{};
@@ -48,7 +54,10 @@ private:
 	float GrabRadius{};
 	// but we hold object closer to us
 	UPROPERTY(EditAnywhere)
-	float HoldDistance{};
+	float MaxHoldDistance{};
+	// and not too close
+	UPROPERTY(EditAnywhere)
+	float MinHoldDistance{};
 
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle{ nullptr };
