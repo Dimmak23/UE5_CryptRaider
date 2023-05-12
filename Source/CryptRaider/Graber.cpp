@@ -23,11 +23,6 @@ void UGraber::BeginPlay()
 	// ...
 
 	PhysicsHandle = GetPhysicsHandle();
-
-	// UE_LOG(LogTemp, Display,																			  //
-	// 	   TEXT("MaxGrabDistance = %f, GrabRadius = %f, MaxHoldDistance = %f, MinHoldDistance = %f."),	  //
-	// 	   MaxGrabDistance, GrabRadius, MaxHoldDistance, MinHoldDistance								  //
-	// );
 }
 
 // Called every frame
@@ -42,8 +37,8 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	if (GrabingTarget != nullptr)
 	{
 		PhysicsHandle->SetTargetLocationAndRotation(	//
-			this->GetClampedNewTargetLocation(),		// use clamp
-			GetComponentRotation()						// use owner rotation
+			GetComponentLocation() + GetForwardVector() * HoldDistance,
+			GetComponentRotation()	  // use owner rotation
 		);
 	}
 }
@@ -72,11 +67,6 @@ void UGraber::GrabStuff()
 
 	if (_HasHit && GrabingTarget == nullptr)	// if no target is grabbed already then - go!
 	{
-		UE_LOG(LogTemp, Display,								//
-			   TEXT("Size of the _HitResult struct is: %d"),	//
-			   sizeof(_HitResult)								//
-		);
-
 		// Prepare target
 		GrabingTarget = _HitResult.GetComponent();
 		// we can't use: PhysicsHandle->GetGrabbedComponent() - we didn't grabed anything yet
@@ -92,36 +82,19 @@ void UGraber::GrabStuff()
 		//!
 		weGotSomething = true;
 		//!
-
-		// UE_LOG(LogTemp, Display,									   //
-		// 	   TEXT("Current Time is: %f, grabber took target..."),	   //
-		// 	   GetWorld()->TimeSeconds								   //
-		// );
 	}
-
-	// Now you know that you miss the target
-	// if (!_HasHit)
-	// {
-	// 	UE_LOG(													 //
-	// 		LogTemp, Display,									 //
-	// 		TEXT("Current Time is: %f, you miss the target"),	 //
-	// 		GetWorld()->TimeSeconds								 //
-	// 	);
-	// }
 }
 
 void UGraber::ReleaseStuff()
 {
-	if (GrabingTarget != nullptr)
-	{
-		PhysicsHandle->ReleaseComponent();
-		// UE_LOG(LogTemp, Display, TEXT("Grabber released object..."));
-		GrabingTarget = nullptr;	// finally invalidating pointer and no longer accessing target
+	if (GrabingTarget == nullptr) return;
 
-		//!
-		weGotSomething = false;
-		//!
-	}
+	PhysicsHandle->ReleaseComponent();
+	GrabingTarget = nullptr;	// finally invalidating pointer and no longer accessing target
+
+	//!
+	weGotSomething = false;
+	//!
 }
 
 UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
@@ -132,10 +105,6 @@ UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 	if (_Result == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Grabber requires a UPhysicsHandleComponent."));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("Recompiled 12:47 PM, found a physics handler: %s..."), *(_Result->GetName()));
 	}
 
 	return _Result;
@@ -161,74 +130,4 @@ bool UGraber::CheckHitResult(FHitResult& __HitResult__) const
 		ECC_GameTraceChannel2,						  //
 		_HitSphere									  //
 	);
-}
-
-FVector UGraber::GetClampedNewTargetLocation() const
-{
-	// some repetative utilities
-	FVector _OwnerLocation{ GetComponentLocation() };
-	FVector _ForwardVector{ GetForwardVector() };
-
-	FVector _MaxTargetPush{ _OwnerLocation + _ForwardVector * MaxHoldDistance };
-	FVector _MinTargetPush{ _OwnerLocation + _ForwardVector * MinHoldDistance };
-	FVector _CurrentTargetLocation{ GrabingTarget->GetRelativeLocation() };
-
-	// Let's try to push target far from us
-	FVector _NewTargetLocation = _MaxTargetPush;
-
-	float _DistanceToCurrent = FVector::Dist(_OwnerLocation, _CurrentTargetLocation);
-	// float _DistanceToMax = FVector::Dist(_OwnerLocation, _MaxTargetPush);
-	// float _DistanceToMin = FVector::Dist(_OwnerLocation, _MinTargetPush);
-
-	bool _firstThird{ false };
-	bool _secondThird{ false };
-	bool _thirdThird{ false };
-
-	// target object are too close to use let's push it a bit
-	if (_DistanceToCurrent < FVector::Dist(_OwnerLocation, _MinTargetPush))
-	{
-		_firstThird = true;
-		_NewTargetLocation = _MinTargetPush;	// here we return to the minimu possible distance
-	}
-	// targeted object are close to us, let's not throw too far, clamp new location instead
-	else if (_DistanceToCurrent < FVector::Dist(_OwnerLocation, _MaxTargetPush))
-	{
-		// UE_LOG(LogTemp, Display,														   //
-		// 	   TEXT("Current Time is: %f, targeted object to close to the grabber..."),	   //
-		// 	   GetWorld()->TimeSeconds													   //
-		// );
-		_secondThird = true;
-
-		// distance to the target are good, let's keep it
-		_NewTargetLocation = _OwnerLocation + _ForwardVector * _DistanceToCurrent;
-	}
-	else
-	{
-		_thirdThird = true;
-	}
-
-	if (_firstThird)
-	{
-		UE_LOG(LogTemp, Display,					 //
-			   TEXT("Target in the first third.")	 //
-		);
-	}
-	else if (_secondThird)
-	{
-		UE_LOG(LogTemp, Display,					  //
-			   TEXT("Target in the second third.")	  //
-		);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display,					//
-			   TEXT("Target in the last third.")	//
-		);
-	}
-	UE_LOG(LogTemp, Display,					   //
-		   TEXT("Distance to the target: %f."),	   //
-		   _DistanceToCurrent					   //
-	);
-
-	return _NewTargetLocation;
 }
