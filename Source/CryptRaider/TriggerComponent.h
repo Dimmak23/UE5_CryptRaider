@@ -36,7 +36,10 @@ public:
 
 private:
 	// check: can we accepted this actor?
-	bool ActorAccepted() const;
+	AActor* GetAcceptedActor() const;
+
+	// how we answer to the ActorAccepted() signal?
+	void ConnectActorToComponent();
 
 	// what we can accept?
 	UPROPERTY(EditAnywhere)

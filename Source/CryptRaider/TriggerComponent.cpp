@@ -33,16 +33,12 @@ void UTriggerComponent::TickComponent(				 //
 
 	// ...
 
-	if (Mover == nullptr) return;
-	if (ActorAccepted())
-	{
-		Mover->SetInitMove(true);
-	}
+	this->ConnectActorToComponent();
 }
 
 void UTriggerComponent::SetMover(UMover* _ParsedMover) { Mover = _ParsedMover; }
 
-bool UTriggerComponent::ActorAccepted() const
+AActor* UTriggerComponent::GetAcceptedActor() const
 {
 	// whom we capture?
 	TArray<AActor*> _Actors;
@@ -53,8 +49,26 @@ bool UTriggerComponent::ActorAccepted() const
 	{
 		if (_Actor->ActorHasTag(UnlockingTag))
 		{
-			return true;
+			return _Actor;
 		}
 	}
-	return false;
+	return nullptr;
+}
+
+void UTriggerComponent::ConnectActorToComponent()
+{
+	if (Mover == nullptr) return;
+
+	AActor* _Actor = this->GetAcceptedActor();
+
+	if (_Actor != nullptr)
+	{
+		UPrimitiveComponent* RootComponent = Cast<UPrimitiveComponent>(_Actor->GetRootComponent());
+		if (RootComponent != nullptr)
+		{
+			RootComponent->SetSimulatePhysics(false);
+		}
+		_Actor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+		Mover->SetInitMove(true);
+	}
 }
