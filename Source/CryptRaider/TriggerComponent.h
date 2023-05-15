@@ -4,6 +4,8 @@
 
 #include "Components/BoxComponent.h"
 #include "CoreMinimal.h"
+#include "Graber.h"
+#include "Mover.h"
 
 // always last
 #include "TriggerComponent.generated.h"
@@ -29,9 +31,17 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 							   FActorComponentTickFunction* ThisTickFunction) override;
 
-private:
-	TArray<AActor*> Actors;
+	UFUNCTION(BlueprintCallable)
+	void SetMover(UMover* _ParsedMover);
 
+private:
+	// check: can we accepted this actor?
+	bool ActorAccepted() const;
+
+	// what we can accept?
 	UPROPERTY(EditAnywhere)
 	FName UnlockingTag;
+
+	// what mover we will control?
+	UMover* Mover{ nullptr };
 };

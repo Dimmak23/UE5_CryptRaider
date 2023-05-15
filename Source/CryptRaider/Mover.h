@@ -37,7 +37,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MoveTime{ 4.0f };
 
-	UPROPERTY(EditAnywhere)
 	bool InitMove{ false };
 
 	// utilities

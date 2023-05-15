@@ -97,6 +97,8 @@ void UGraber::ReleaseStuff()
 	//!
 }
 
+bool UGraber::isGotSomething() const { return weGotSomething; }
+
 UPhysicsHandleComponent* UGraber::GetPhysicsHandle() const
 {
 	UPhysicsHandleComponent* _Result{ nullptr };

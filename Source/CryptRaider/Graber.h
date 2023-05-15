@@ -36,6 +36,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReleaseStuff();
 
+	bool isGotSomething() const;
+
 private:
 	// physics
 	UPhysicsHandleComponent* GetPhysicsHandle() const;

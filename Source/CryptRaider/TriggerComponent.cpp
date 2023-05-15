@@ -33,10 +33,28 @@ void UTriggerComponent::TickComponent(				 //
 
 	// ...
 
-	GetOverlappingActors(Actors);
-
-	for (AActor* Actor : Actors)
+	if (Mover == nullptr) return;
+	if (ActorAccepted())
 	{
-		if (Actor->ActorHasTag(UnlockingTag)) UE_LOG(LogTemp, Display, TEXT("Unlock labyrinth door, please."));
+		Mover->SetInitMove(true);
 	}
+}
+
+void UTriggerComponent::SetMover(UMover* _ParsedMover) { Mover = _ParsedMover; }
+
+bool UTriggerComponent::ActorAccepted() const
+{
+	// whom we capture?
+	TArray<AActor*> _Actors;
+
+	GetOverlappingActors(_Actors);
+
+	for (AActor* _Actor : _Actors)
+	{
+		if (_Actor->ActorHasTag(UnlockingTag))
+		{
+			return true;
+		}
+	}
+	return false;
 }
