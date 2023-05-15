@@ -40,7 +40,6 @@ private:
 	bool InitMove{ false };
 
 	// utilities
-	// UPROPERTY(EditAnywhere)
 	FVector OriginalLocation;
 	FVector TargetLocation{};
 	float Speed{};

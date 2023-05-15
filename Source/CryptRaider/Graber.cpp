@@ -32,13 +32,11 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 
 	// ...
 
-	if (PhysicsHandle == nullptr) return;
-
-	if (GrabingTarget != nullptr)
+	if (PhysicsHandle && GrabingActor)
 	{
-		PhysicsHandle->SetTargetLocationAndRotation(	//
-			GetComponentLocation() + GetForwardVector() * HoldDistance,
-			GetComponentRotation()	  // use owner rotation
+		PhysicsHandle->SetTargetLocationAndRotation(					   //
+			GetComponentLocation() + GetForwardVector() * HoldDistance,	   // use owner seening direction
+			GetComponentRotation()										   // use owner rotation
 		);
 	}
 }
@@ -65,15 +63,20 @@ void UGraber::GrabStuff()
 	// can we grab (on such distance, with such collision sphere)?
 	bool _HasHit{ this->CheckHitResult(_HitResult) };
 
-	if (_HasHit && GrabingTarget == nullptr)	// if no target is grabbed already then - go!
+	// if some target is grabbed already then don't check the hit
+	// but otherwise do checking
+	if ((GrabingActor == nullptr) && _HasHit)
 	{
 		// Prepare target
-		GrabingTarget = _HitResult.GetComponent();
+		UPrimitiveComponent* _GrabingTarget = _HitResult.GetComponent();
+		GrabingActor = _HitResult.GetActor();
+		// Explicitly say that actor has been grabbed
+		GrabingActor->Tags.Add("Grabbed");
 		// we can't use: PhysicsHandle->GetGrabbedComponent() - we didn't grabed anything yet
-		GrabingTarget->WakeAllRigidBodies();	// we avoid here throwing target into the game textures
+		_GrabingTarget->WakeAllRigidBodies();	 // we avoid here throwing target into the game textures
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
-			_HitResult.GetComponent(),						   //
+			_GrabingTarget,									   //
 			NAME_None,										   //
 			_HitResult.ImpactPoint,							   //
 			GetComponentRotation()							   // use owner rotation
@@ -87,10 +90,17 @@ void UGraber::GrabStuff()
 
 void UGraber::ReleaseStuff()
 {
-	if (GrabingTarget == nullptr) return;
+	if (GrabingActor == nullptr) return;
 
+	// if (GrabingActor->ActorHasTag("Grabbed"))
+	// {
+	GrabingActor->Tags.Remove("Grabbed");
+	// }
+	// Here we release target
 	PhysicsHandle->ReleaseComponent();
-	GrabingTarget = nullptr;	// finally invalidating pointer and no longer accessing target
+
+	// finally invalidating pointer and no longer accessing targeted actor
+	GrabingActor = nullptr;
 
 	//!
 	weGotSomething = false;

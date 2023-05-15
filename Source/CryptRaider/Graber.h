@@ -58,8 +58,8 @@ private:
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle{ nullptr };
 
-	// target
-	UPrimitiveComponent* GrabingTarget{ nullptr };
+	// targeted actor
+	AActor* GrabingActor{ nullptr };
 
 	// do we grab something already?
 	bool weGotSomething{ false };

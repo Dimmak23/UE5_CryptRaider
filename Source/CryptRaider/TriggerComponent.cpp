@@ -47,7 +47,8 @@ AActor* UTriggerComponent::GetAcceptedActor() const
 
 	for (AActor* _Actor : _Actors)
 	{
-		if (_Actor->ActorHasTag(UnlockingTag))
+		// Actor should be cappable to unlock and not being grabbed at the moment
+		if (_Actor->ActorHasTag(UnlockingTag) && !_Actor->ActorHasTag("Grabbed"))
 		{
 			return _Actor;
 		}
@@ -57,18 +58,17 @@ AActor* UTriggerComponent::GetAcceptedActor() const
 
 void UTriggerComponent::ConnectActorToComponent()
 {
-	if (Mover == nullptr) return;
-
 	AActor* _Actor = this->GetAcceptedActor();
 
-	if (_Actor != nullptr)
+	if (Mover && _Actor)
 	{
 		UPrimitiveComponent* RootComponent = Cast<UPrimitiveComponent>(_Actor->GetRootComponent());
 		if (RootComponent != nullptr)
 		{
-			RootComponent->SetSimulatePhysics(false);
+			RootComponent->SetSimulatePhysics(false);	 // we don't want actor falling down while moving
 		}
+		// use location, orientation, scale as in the world
 		_Actor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
-		Mover->SetInitMove(true);
+		Mover->SetInitMove(true);	 // allow door to move
 	}
 }
