@@ -55,6 +55,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float HoldDistance{};
 
+	//
+	FName Forbids;
+
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle{ nullptr };
 

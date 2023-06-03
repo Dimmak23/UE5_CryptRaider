@@ -13,6 +13,7 @@ UGraber::UGraber()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	Forbids = "Grabbed";
 }
 
 // Called when the game starts
@@ -69,11 +70,10 @@ void UGraber::GrabStuff()
 	{
 		// Prepare target
 		UPrimitiveComponent* _GrabingTarget = _HitResult.GetComponent();
+		_GrabingTarget->SetSimulatePhysics(true);	 // revive physics, so you can grab
 		GrabingActor = _HitResult.GetActor();
-		// Explicitly say that actor has been grabbed
-		GrabingActor->Tags.Add("Grabbed");
-		// we can't use: PhysicsHandle->GetGrabbedComponent() - we didn't grabed anything yet
 		_GrabingTarget->WakeAllRigidBodies();	 // we avoid here throwing target into the game textures
+
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
 			_GrabingTarget,									   //
@@ -82,6 +82,8 @@ void UGraber::GrabStuff()
 			GetComponentRotation()							   // use owner rotation
 		);
 
+		// Explicitly say that actor has been grabbed
+		GrabingActor->Tags.Add("Grabbed");
 		//!
 		weGotSomething = true;
 		//!
