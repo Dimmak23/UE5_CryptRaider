@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Engine/World.h"
 #include "OneConditionMover.h"
+#include "OneConditionRotator.h"
 
 // should be the last header always!
 #include "TagTrigger.generated.h"
@@ -34,6 +35,10 @@ public:
 	// OneConditionMover interface
 	UFUNCTION(BlueprintCallable)
 	void SetOCMover(UOneConditionMover* __ParsedOCMover);
+
+	// OneConditionRotator interface
+	UFUNCTION(BlueprintCallable)
+	void SetOCRotator(UOneConditionRotator* __ParsedOCRotator);
 
 	// Lighter interface
 	UFUNCTION(BlueprintCallable)
@@ -65,6 +70,9 @@ private:
 
 	// if we would have any
 	UOneConditionMover* OCMover{ nullptr };
+
+	// if we would have any
+	UOneConditionRotator* OCRotator{ nullptr };
 
 	//
 	bool TriggingState{ false };

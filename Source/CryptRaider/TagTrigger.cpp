@@ -36,6 +36,9 @@ void UTagTrigger::TickComponent(					 //
 // We set Mover in the blueprint
 void UTagTrigger::SetOCMover(UOneConditionMover* __ParsedOCMover) { OCMover = __ParsedOCMover; }
 
+// We set Rotator in the blueprint
+void UTagTrigger::SetOCRotator(UOneConditionRotator* __ParsedOCRotator) { OCRotator = __ParsedOCRotator; }
+
 void UTagTrigger::ConnectActorToComponent()
 {
 	AActor* _Actor = this->GetAcceptedActor();
@@ -68,12 +71,15 @@ AActor* UTagTrigger::GetAcceptedActor()
 		if (_Actor->ActorHasTag(UnlockingTag) && !_Actor->ActorHasTag(Forbids))
 		{
 			TriggingState = true;
-			if (OCMover) OCMover->SetterWrapper(TriggingState, CellNumber);	   // allow door to move
+			if (OCMover) OCMover->SetterWrapper(TriggingState, CellNumber);		   // allow door to move
+			if (OCRotator) OCRotator->SetterWrapper(TriggingState, CellNumber);	   // allow door to rotate
 			return _Actor;
 		}
 	}
 	// we got so far - disallow to door meet offset, return
 	TriggingState = false;
 	if (OCMover) OCMover->SetterWrapper(TriggingState, CellNumber);
+	if (OCRotator) OCRotator->SetterWrapper(TriggingState, CellNumber);
+
 	return nullptr;
 }
