@@ -70,9 +70,9 @@ void UGraber::GrabStuff()
 	{
 		// Prepare target
 		UPrimitiveComponent* _GrabingTarget = _HitResult.GetComponent();
+		_GrabingTarget->WakeAllRigidBodies();		 // we avoid here throwing target into the game textures
 		_GrabingTarget->SetSimulatePhysics(true);	 // revive physics, so you can grab
 		GrabingActor = _HitResult.GetActor();
-		_GrabingTarget->WakeAllRigidBodies();	 // we avoid here throwing target into the game textures
 
 		// Actually grab something
 		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
