@@ -198,5 +198,37 @@
       "@D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default\\CryptRaider.255.rsp"
     ],
     "directory": "D:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+  },
+  {
+    "file": "D:\\CPP\\UE5_Projects\\CryptRaider\\Source\\CryptRaider\\MassTrigger.h",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe",
+      "@D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default\\CryptRaider.255.rsp"
+    ],
+    "directory": "D:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+  },
+  {
+    "file": "D:\\CPP\\UE5_Projects\\CryptRaider\\Source\\CryptRaider\\MassTrigger.cpp",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe",
+      "@D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default\\CryptRaider.255.rsp"
+    ],
+    "directory": "D:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+  },
+  {
+    "file": "D:\\CPP\\UE5_Projects\\CryptRaider\\Source\\CryptRaider\\MassTagTrigger.h",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe",
+      "@D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default\\CryptRaider.255.rsp"
+    ],
+    "directory": "D:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+  },
+  {
+    "file": "D:\\CPP\\UE5_Projects\\CryptRaider\\Source\\CryptRaider\\MassTagTrigger.cpp",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.35.32215\\bin\\HostX64\\x64\\cl.exe",
+      "@D:\\CPP\\UE5_Projects\\CryptRaider\\.vscode\\compileCommands_Default\\CryptRaider.255.rsp"
+    ],
+    "directory": "D:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
   }
 ]
