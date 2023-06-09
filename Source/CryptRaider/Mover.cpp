@@ -2,6 +2,7 @@
 
 #include "Mover.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values for this component's properties
@@ -35,6 +36,12 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 		FVector CurrentLocation = GetOwner()->GetActorLocation();
 		FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
 		GetOwner()->SetActorLocation(NewLocation);
+
+		//
+		if (MoveSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, MoveSound, GetOwner()->GetActorLocation());
+		}
 	}
 }
 

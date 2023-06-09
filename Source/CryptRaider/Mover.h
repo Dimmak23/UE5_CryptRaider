@@ -6,6 +6,8 @@
 #include "CoreMinimal.h"
 #include "Mover.generated.h"
 
+class USoundBase;
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CRYPTRAIDER_API UMover : public UActorComponent
 {
@@ -31,13 +33,16 @@ public:
 	bool GetInitMove() const;
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Mover")
 	FVector MoveOffset;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Mover")
 	float MoveTime{ 4.0f };
 
 	bool InitMove{ false };
+
+	UPROPERTY(EditAnywhere, Category = "Mover")
+	USoundBase* MoveSound;
 
 	// utilities
 	FVector OriginalLocation;

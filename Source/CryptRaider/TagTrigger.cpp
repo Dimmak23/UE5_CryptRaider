@@ -11,6 +11,8 @@ UTagTrigger::UTagTrigger()
 
 	// ...
 	Forbids = "Grabbed";
+	PermanentAttachment = "PermanentAttachment";
+	AttachOnce = "AttachOnce";
 }
 // Called when the game starts
 void UTagTrigger::BeginPlay()
@@ -50,6 +52,12 @@ void UTagTrigger::ConnectActorToComponent()
 		if ((_RootComponent != nullptr) && IsDisablePhysics)
 		{
 			_RootComponent->SetSimulatePhysics(false);	  // we don't want actor falling down while moving
+		}
+		//
+		if (CanAttachPermanently && _Actor->ActorHasTag(AttachOnce))
+		{
+			_Actor->Tags.Add(PermanentAttachment);
+			_Actor->Tags.Remove(AttachOnce);
 		}
 		// use location, orientation, scale as in the world
 		_Actor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);

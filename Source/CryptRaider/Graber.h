@@ -58,6 +58,9 @@ private:
 	//
 	FName Forbids;
 
+	//
+	FName PermanentAttachment;
+
 	// physics
 	UPhysicsHandleComponent* PhysicsHandle{ nullptr };
 

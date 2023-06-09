@@ -2,6 +2,9 @@
 
 #include "OneConditionMover.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
+
 // Sets default values for this component's properties
 UOneConditionMover::UOneConditionMover()
 {
@@ -33,10 +36,18 @@ void UOneConditionMover::TickComponent(float DeltaTime, ELevelTick TickType,
 	if (MoveByOffset)	 // Move to the target when allowed
 	{
 		TargetLocation = OriginalLocation + MoveOffset;
+
+		//
+		if (MoveSound && !AlreadyPlayingSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, MoveSound, GetOwner()->GetActorLocation());
+			AlreadyPlayingSound = true;
+		}
 	}
 	else	// Comeback when Mover are dissallowed
 	{
 		TargetLocation = OriginalLocation;
+		AlreadyPlayingSound = false;
 	}
 
 	// Update location

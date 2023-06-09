@@ -54,18 +54,28 @@ private:
 
 private:
 	//
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Tag Trigger")
 	FName UnlockingTag;
 
 	//
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Tag Trigger")
 	bool IsDisablePhysics{ true };
 
 	//
 	FName Forbids;
 
 	//
-	UPROPERTY(EditAnyWhere)
+	FName PermanentAttachment;
+
+	//
+	FName AttachOnce;
+
+	//
+	UPROPERTY(EditAnyWhere, Category = "Tag Trigger")
+	bool CanAttachPermanently{ false };
+
+	//
+	UPROPERTY(EditAnyWhere, Category = "Tag Trigger")
 	uint8 CellNumber{};
 
 	// if we would have any

@@ -8,6 +8,8 @@
 // should be the last header always!
 #include "OneConditionMover.generated.h"
 
+class USoundBase;
+
 /**
  *@class single one condition mover
  */
@@ -30,11 +32,14 @@ public:
 							   FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Mover")
 	FVector MoveOffset;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Mover")
 	float MoveTime{ 4.0f };
+
+	UPROPERTY(EditAnywhere, Category = "Mover")
+	USoundBase* MoveSound;
 
 	bool MoveByOffset{ false };
 
@@ -42,6 +47,8 @@ private:
 	FVector OriginalLocation;
 	FVector TargetLocation{};
 	float Speed{};
+
+	bool AlreadyPlayingSound{ false };
 
 public:
 	// encapsulate InitMove

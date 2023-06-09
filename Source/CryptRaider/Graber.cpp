@@ -14,6 +14,7 @@ UGraber::UGraber()
 
 	// ...
 	Forbids = "Grabbed";
+	PermanentAttachment = "PermanentAttachment";
 }
 
 // Called when the game starts
@@ -64,30 +65,31 @@ void UGraber::GrabStuff()
 	// can we grab (on such distance, with such collision sphere)?
 	bool _HasHit{ this->CheckHitResult(_HitResult) };
 
-	// if some target is grabbed already then don't check the hit
-	// but otherwise do checking
-	if ((GrabingActor == nullptr) && _HasHit)
-	{
-		// Prepare target
-		UPrimitiveComponent* _GrabingTarget = _HitResult.GetComponent();
-		_GrabingTarget->WakeAllRigidBodies();		 // we avoid here throwing target into the game textures
-		_GrabingTarget->SetSimulatePhysics(true);	 // revive physics, so you can grab
-		GrabingActor = _HitResult.GetActor();
+	// if some target is grabbed already or there is no hit, don't grab
+	if ((GrabingActor != nullptr) || !_HasHit) return;
 
-		// Actually grab something
-		PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
-			_GrabingTarget,									   //
-			NAME_None,										   //
-			_HitResult.ImpactPoint,							   //
-			GetComponentRotation()							   // use owner rotation
-		);
+	// Disable grabbing if Actor should have permanent attachment
+	GrabingActor = _HitResult.GetActor();
+	if (GrabingActor->ActorHasTag(PermanentAttachment)) return;
 
-		// Explicitly say that actor has been grabbed
-		GrabingActor->Tags.Add("Grabbed");
-		//!
-		weGotSomething = true;
-		//!
-	}
+	// Prepare target
+	UPrimitiveComponent* _GrabingTarget = _HitResult.GetComponent();
+	_GrabingTarget->WakeAllRigidBodies();		 // we avoid here throwing target into the game textures
+	_GrabingTarget->SetSimulatePhysics(true);	 // revive physics, so you can grab
+
+	// Actually grab something
+	PhysicsHandle->GrabComponentAtLocationWithRotation(	   //
+		_GrabingTarget,									   //
+		NAME_None,										   //
+		_HitResult.ImpactPoint,							   //
+		GetComponentRotation()							   // use owner rotation
+	);
+
+	// Explicitly say that actor has been grabbed
+	GrabingActor->Tags.Add("Grabbed");
+	//!
+	weGotSomething = true;
+	//!
 }
 
 void UGraber::ReleaseStuff()
