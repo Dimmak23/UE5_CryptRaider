@@ -36,14 +36,12 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 
 	if (PhysicsHandle && GrabingActor)
 	{
-		// float DistanceToGrabingActor = FVector::Dist(GetComponentLocation(), GrabingActor->GetActorLocation());
-		// if (HoldDistance > DistanceToGrabingActor) DistanceToGrabingActor = HoldDistance;
-		PhysicsHandle->SetTargetLocationAndRotation(	//
-														// GetComponentLocation() + GetForwardVector() *
-														// DistanceToGrabingActor,	 // use owner seening direction
+		PhysicsHandle->SetTargetLocationAndRotation(					   //
 			GetComponentLocation() + GetForwardVector() * HoldDistance,	   // use owner seening direction
 			GetComponentRotation()										   // use owner rotation
 		);
+		float DistanceToGrabingActor = FVector::Dist(GetComponentLocation(), GrabingActor->GetActorLocation());
+		if (DistanceToGrabingActor > MaxGrabDistance) this->ReleaseStuff();
 	}
 }
 
