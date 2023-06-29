@@ -37,7 +37,7 @@ void UGraber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponen
 	if (PhysicsHandle && GrabingActor)
 	{
 		PhysicsHandle->SetTargetLocationAndRotation(					   //
-			GetComponentLocation() + GetForwardVector() * HoldDistance,	   // use owner seening direction
+			GetComponentLocation() + GetForwardVector() * HoldDistance,	   // use owner seeing direction
 			GetComponentRotation()										   // use owner rotation
 		);
 		float DistanceToGrabingActor = FVector::Dist(GetComponentLocation(), GrabingActor->GetActorLocation());
