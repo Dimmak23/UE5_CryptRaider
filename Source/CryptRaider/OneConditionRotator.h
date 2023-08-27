@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//* Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
-// STL
-#include <vector>
-
-// Unreal Engine
+//? Unreal Engine
 #include "Components/ActorComponent.h"
+#include "Components/AudioComponent.h"
 #include "CoreMinimal.h"
 
-// should be the last header always!
+//? Should be the last header always!
 #include "OneConditionRotator.generated.h"
 
 /**
@@ -21,51 +19,58 @@ class CRYPTRAIDER_API UOneConditionRotator : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
+	//? Sets default values for this component's properties
 	UOneConditionRotator();
 
 protected:
-	// Called when the game starts
+	//? Called when the game starts
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
+	//? Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 							   FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Rotator")
+	bool Inverted{ false };
+
+	UPROPERTY(EditAnywhere, Category = "Rotator")
 	FRotator RotationAngle;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Rotator")
 	float RotationTime{ 4.0f };
 
-	bool RotateByAngle{ false };
+	UPROPERTY(EditAnywhere, Category = "Rotator")
+	USoundBase* RotateSound;
+
+	UAudioComponent* RotateAudioComponent;
 
 	UPROPERTY(EditAnyWhere)
 	uint8 CellsQty{ 1 };
 
+	bool RotateByAngle{ false };
+
 	uint8 AquiredQty{};
 
-	// std::vector<bool> States;
 	bool* TriggerStates;
 
-	// utilities
+	//? Utilities
 	FRotator OriginalRotation;
 	FRotator TargetRotation{};
 	float Speed{};
 
 public:
-	// encapsulate RotateByAngle
+	//? Encapsulate RotateByAngle
 	UFUNCTION(BlueprintCallable, Category = Door)
 	void SetRotateByAngle(const bool& __State);
 	UFUNCTION(BlueprintCallable, Category = Door)
 	bool GetRotateByAngle() const;
 
-	// All triggers call this
+	//? All triggers call this
 	UFUNCTION(BlueprintCallable, Category = Door)
 	void SetterWrapper(const bool& __State, const uint8& __CellNumber);
 
-	// Utility
+	//? Utility
 	bool CheckAllCells(const bool* __CheckThis);
 };
