@@ -55,7 +55,7 @@ void UTagTrigger::ConnectActorToComponent()
 			_RootComponent->SetSimulatePhysics(false);	  //? We don't want actor falling down while moving
 		}
 		//? Mark as permanent attach if needed
-		if (CanAttachPermanently && _Actor->ActorHasTag(AttachOnce))
+		if (CanAttachPermanently && _Actor->ActorHasTag(AttachOnce) && !_Actor->ActorHasTag(PermanentAttachment))
 		{
 			_Actor->Tags.Add(PermanentAttachment);
 			_Actor->Tags.Remove(AttachOnce);

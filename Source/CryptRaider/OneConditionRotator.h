@@ -21,6 +21,7 @@ class CRYPTRAIDER_API UOneConditionRotator : public UActorComponent
 public:
 	//? Sets default values for this component's properties
 	UOneConditionRotator();
+	// virtual ~UOneConditionRotator() noexcept;
 
 protected:
 	//? Called when the game starts
@@ -72,5 +73,7 @@ public:
 	void SetterWrapper(const bool& __State, const uint8& __CellNumber);
 
 	//? Utility
-	bool CheckAllCells(const bool* __CheckThis);
+	bool AllIsTriggered(/* const bool* __CheckThis */);
+
+	void LogAllCells();
 };
