@@ -22,10 +22,15 @@ void UOneConditionRotator::BeginPlay()
 
 	// ...
 	// States.resize(CellsQty);
-	TriggerStates = new bool[CellsQty];
-	for (int _index{}; _index < CellsQty; _index++)
+
+	//? Don't do this for double
+	if (!GetOwner()->ActorHasTag("Double"))
 	{
-		TriggerStates[_index] = false;
+		TriggerStates = new bool[CellsQty];
+		for (int _index{}; _index < CellsQty; _index++)
+		{
+			TriggerStates[_index] = false;
+		}
 	}
 
 	// ...
@@ -41,7 +46,10 @@ void UOneConditionRotator::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	//? Check do we need to rotate
-	this->SetRotateByAngle(this->AllIsTriggered());
+	if (!GetOwner()->ActorHasTag("Double"))	   //? Don't do this for double
+	{
+		this->SetRotateByAngle(this->AllIsTriggered());
+	}
 
 	if (RotateByAngle)	  //? Rotate to the target when allowed
 	{
@@ -63,10 +71,7 @@ void UOneConditionRotator::SetRotateByAngle(const bool& __State)
 {
 	if (__State != GetRotateByAngle())	  //? Do nothing if no new info given
 	{
-		UE_LOG(LogTemp, Warning, TEXT("New __State paresed = %d"), (int)__State);
-
 		RotateByAngle = __State;
-		UE_LOG(LogTemp, Warning, TEXT("RotateByAngle = %d"), (int)RotateByAngle);
 
 		//? If door is inverted we are going to stay - if we got object in trigger area
 		//? or we going to move if we don't have object
@@ -76,8 +81,6 @@ void UOneConditionRotator::SetRotateByAngle(const bool& __State)
 		{
 			//! No need in this, we re-assign 'MoveAudioComponent' later
 			// if (RotateAudioComponent && RotateAudioComponent->IsPlaying()) RotateAudioComponent->Stop();
-
-			UE_LOG(LogTemp, Warning, TEXT("Playing open dungeon sound..."));
 
 			RotateAudioComponent =
 				UGameplayStatics::SpawnSoundAtLocation(this, RotateSound, GetOwner()->GetActorLocation());
@@ -117,13 +120,11 @@ void UOneConditionRotator::SetterWrapper(const bool& __State, const uint8& __Cel
 	if (__State)
 	{
 		TriggerStates[__CellNumber] = true;
-
-		this->LogAllCells();
+		// this->LogAllCells();
 	}
 	else
 	{
 		TriggerStates[__CellNumber] = false;
-
-		this->LogAllCells();
+		// this->LogAllCells();
 	}
 }

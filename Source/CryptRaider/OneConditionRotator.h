@@ -56,6 +56,8 @@ private:
 
 	bool* TriggerStates;
 
+	FName DoublerTag{ FName(TEXT("Double")) };
+
 	//? Utilities
 	FRotator OriginalRotation;
 	FRotator TargetRotation{};
