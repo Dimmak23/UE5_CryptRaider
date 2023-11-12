@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-06-11T16:13:58.138Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="H1nQdtocrokGncPFC5KE" version="21.3.7" type="device">
+<mxfile host="Electron" modified="2023-09-02T17:15:09.988Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="SfxC7FapsRyh5NU1Xbp0" version="21.6.8" type="device">
   <diagram name="Layout" id="eOi9ijdWCz7-imKwDL1J">
-    <mxGraphModel dx="1183" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1420" dy="830" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -632,7 +632,7 @@
         <mxCell id="6FVcj39iq6i3qzFbRGXr-54" value="Dummy D.2" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#B9E0A5;fontColor=#303030;" parent="1" vertex="1">
           <mxGeometry x="1120" y="520" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="6FVcj39iq6i3qzFbRGXr-55" value="m = 40kg" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="6FVcj39iq6i3qzFbRGXr-54" vertex="1">
+        <mxCell id="6FVcj39iq6i3qzFbRGXr-55" value="m = 44kg" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="6FVcj39iq6i3qzFbRGXr-54" vertex="1">
           <mxGeometry y="30" width="120" height="30" as="geometry" />
         </mxCell>
         <mxCell id="6FVcj39iq6i3qzFbRGXr-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=1;strokeColor=#B9E0A5;" parent="1" source="6FVcj39iq6i3qzFbRGXr-58" target="6FVcj39iq6i3qzFbRGXr-40" edge="1">
